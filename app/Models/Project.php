@@ -10,7 +10,17 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'slug', 'title', 'description', 'creation_date', 'image'];
+    protected $fillable = ['user_id', 'category_id', 'slug', 'title', 'description', 'creation_date', 'image'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public static function getSlug($title)
     {

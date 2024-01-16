@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Project;
+use App\Models\Category;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Controllers\Controller;
@@ -25,7 +26,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create');
+        $categories = Category::all();
+        return view('admin.projects.create', compact('categories'));
     }
 
     /**
@@ -60,7 +62,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $categories = Category::all();
+        return view('admin.projects.edit', compact('project', 'categories'));
     }
 
     /**
@@ -69,10 +72,11 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $form_data = $request->validated();
+        $form_data['slug'] = $project->slug;
         if ($project->title !== $form_data['title']) {
             $slug = Project::getSlug($form_data['title']);
+            $form_data['slug'] = $slug;
         }
-        $form_data['slug'] = $slug;
         $form_data['user_id'] = $project->user_id;
         if ($request->hasFile('image')) {
             if ($project->image) {

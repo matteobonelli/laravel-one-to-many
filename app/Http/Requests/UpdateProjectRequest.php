@@ -26,7 +26,8 @@ class UpdateProjectRequest extends FormRequest
             'title' => ['required', 'max:200', Rule::unique('projects')->ignore($this->project)],
             'description' => ['nullable', 'min:5'],
             'creation_date' => ['nullable', 'date'],
-            'image' => ['nullable', 'image']
+            'image' => ['nullable', 'image'],
+            'category_id' => ['nullable', 'exists:categories,id']
         ];
     }
 
