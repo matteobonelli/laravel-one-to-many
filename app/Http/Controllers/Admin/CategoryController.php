@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -32,7 +33,11 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        //
+        $form_data = $request->validated();
+        $slug = Category::getSlug($form_data['name']);
+        $form_data['slug'] = $slug;
+        $newCategory = Category::create($form_data);
+        return to_route('admin.categories.show', $newCategory->slug);
     }
 
     /**
@@ -64,6 +69,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return to_route('admin.categories.index')->with('message', "$category->title eliminato con successo!");
     }
 }
