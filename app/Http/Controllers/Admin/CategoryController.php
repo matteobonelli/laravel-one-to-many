@@ -61,7 +61,14 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        $form_data = $request->validated();
+        $form_data['slug'] = $category->slug;
+        if ($category->name !== $form_data['name']) {
+            $slug = Category::getSlug($form_data['name']);
+            $form_data['slug'] = $slug;
+        }
+        $category->update($form_data);
+        return to_route('admin.categories.show', $category->slug);
     }
 
     /**

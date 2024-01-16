@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCategoryRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,16 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [Rule::unique('categories')->ignore($this->category), 'required', 'max:200']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.unique' => 'Il nome della categoria è già stato utilizzato',
+            'name.max' => 'Il nome della categoria può avere massimo :max caratteri',
+            'name.required' => 'Il nome della categoria è richiesto'
         ];
     }
 }
